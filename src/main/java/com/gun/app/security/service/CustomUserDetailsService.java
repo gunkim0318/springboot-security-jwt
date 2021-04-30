@@ -32,11 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> optMember = memberRepository.findByUsername(username);
-        if(!optMember.isPresent()){
-            throw new UsernameNotFoundException("해당 유저를 찾을 수 없습니다. :::"+username);
-        }
-        Member member = optMember.get();
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다. :::"+username));
+
         Collection<SimpleGrantedAuthority> roles = new ArrayList<>();
         roles.add(new SimpleGrantedAuthority(member.getRole().getValue()));
 
